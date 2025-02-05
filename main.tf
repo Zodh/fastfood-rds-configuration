@@ -3,8 +3,8 @@ locals {
   postgres_password = base64decode(data.kubernetes_secret.fastfood_secret.data["POSTGRES_PASSWORD"])
 }
 
-# Criar o RDS (por exemplo, um banco de dados MySQL)
-resource "aws_db_instance" "rds" {
+# Cria o banco relacional postgres para order
+resource "aws_db_instance" "rds_order" {
   identifier        = "mydb-instance"
   engine            = "postgres"
   instance_class    = "db.t3.micro"
@@ -18,7 +18,26 @@ resource "aws_db_instance" "rds" {
   publicly_accessible = true
   skip_final_snapshot  = true
   tags = {
-    Name = "MyRDSInstance"
+    Name = "MyRDSInstanceOrder"
+  }
+}
+
+# Cria o banco relacional postgres para person
+resource "aws_db_instance" "rds_person" {
+  identifier        = "postgres-person"
+  engine            = "postgres"
+  instance_class    = "db.t3.micro"
+  allocated_storage = 20
+  db_name           = "postgres"
+  username          = local.postgres_user
+  password          = local.postgres_password
+  vpc_security_group_ids = [aws_security_group.rds_sg.id]
+  db_subnet_group_name = aws_db_subnet_group.rds_subnet.name
+  multi_az          = false
+  publicly_accessible = true
+  skip_final_snapshot  = true
+  tags = {
+    Name = "MyRDSInstancePerson"
   }
 }
 
