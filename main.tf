@@ -5,7 +5,7 @@ locals {
 
 # Cria o banco relacional postgres para order
 resource "aws_db_instance" "rds_order" {
-  identifier        = "mydb-instance"
+  identifier        = "postgres-order"
   engine            = "postgres"
   instance_class    = "db.t3.micro"
   allocated_storage = 20
